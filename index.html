@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advanced Hashtag Generator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #e0f2f7;
+            color: #333;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 700px;
+            margin: 0 auto;
+            background-color: #fff;
+            padding: 20px;
+            border: 3px solid #FFD700;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            color: #4CAF50;
+        }
+
+        textarea {
+            width: 95%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            resize: vertical;
+        }
+
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-right: 10px;
+        }
+
+        button:hover {
+            background-color: #3e8e41;
+        }
+
+        #hashtagResult {
+            margin-top: 20px;
+            font-size: 18px;
+            color: #007bff;
+            word-break: break-word;
+        }
+
+        #downloadButton {
+            display: none;
+            background-color: #007bff;
+        }
+
+        #downloadButton:hover {
+            background-color: #0056b3;
+        }
+
+        #copyButton {
+            background-color: #007bff;
+        }
+
+         #copyButton:hover {
+            background-color: #0056b3;
+        }
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Advanced Hashtag Generator</h1>
+        <textarea id="inputText" placeholder="Enter your text here..."></textarea>
+        <button onclick="generateHashtags()">Generate Hashtags</button>
+        <button id="copyButton" onclick="copyHashtags()">Copy Hashtags</button>
+        <button id="downloadButton" onclick="downloadHashtags()">Download Text File</button>
+        <div id="hashtagResult"></div>
+    </div>
+
+    <script>
+        function generateHashtags() {
+            const inputText = document.getElementById('inputText').value;
+            if (!inputText.trim()) {
+                alert("Please enter some text!");
+                return;
+            }
+
+            const words = inputText.toLowerCase().split(/\s+/).filter(word => word.length > 2);
+            const uniqueWords = [...new Set(words)];
+
+            // **Aggressively Expand the List of Words** (Replace with a better method)
+            const expandedWords = [];
+            uniqueWords.forEach(word => {
+                expandedWords.push(word); // Keep the original word
+
+                // Add several variations to ensure more than 40 hashtags (adjust as needed)
+                expandedWords.push(word + "2024");
+                expandedWords.push(word + "tips");
+                expandedWords.push("best" + word);
+                expandedWords.push(word + "guide");
+                expandedWords.push(word + "tutorial");
+                expandedWords.push(word + "hacks");
+                expandedWords.push("top" + word);
+                expandedWords.push(word + "ideas");
+                expandedWords.push(word + "inspiration");
+                expandedWords.push(word + "community");
+            });
+
+            //Remove any duplicate expanded words
+            const uniqueExpandedWords = [...new Set(expandedWords)];
+
+            //Limit the number of hashtags to generate (optional, can remove this if you always want as many as possible)
+            let hashtags = uniqueExpandedWords.map(word => '#' + word);
+          /*  if (hashtags.length > 40) {   // You can remove these lines to not limit the hashtags, however it's often good practice to have a limit
+                hashtags = hashtags.slice(0, 40); // Limit to 40 or the number available if fewer
+            }*/
+
+
+            const hashtagString = hashtags.join(' ');
+
+            document.getElementById('hashtagResult').innerText = hashtagString;
+            document.getElementById('downloadButton').style.display = 'inline-block';
+        }
+
+        function copyHashtags() {
+          const hashtagResult = document.getElementById('hashtagResult');
+          const hashtags = hashtagResult.innerText;
+
+          if (hashtags) {
+              navigator.clipboard.writeText(hashtags)
+                  .then(() => {
+                      alert('Hashtags copied to clipboard!');
+                  })
+                  .catch(err => {
+                      console.error('Failed to copy: ', err);
+                      alert('Failed to copy hashtags. Please try again.');
+                  });
+          } else {
+              alert("No hashtags to copy. Generate hashtags first.");
+          }
+       }
+
+        function downloadHashtags() {
+            const hashtagResult = document.getElementById('hashtagResult').innerText;
+            if (!hashtagResult) {
+                alert("Generate hashtags first!");
+                return;
+            }
+
+            const filename = "hashtags.txt";
+            const element = document.createElement('a');
+            element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(hashtagResult));
+            element.setAttribute('download', filename);
+
+            element.style.display = 'none';
+            document.body.appendChild(element);
+
+            element.click();
+
+            document.body.removeChild(element);
+        }
+    </script>
+</body>
+</html>
